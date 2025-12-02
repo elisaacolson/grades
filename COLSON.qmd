@@ -250,4 +250,21 @@ nb_grades_per_student %>%
     y = "Number of Grades"
   )
 ```
+### Question 15
+
+```{r}
+# Créer le dataframe
+music_dance_grades <- grades %>% 
+  left_join(cours, by = "course_id") %>% 
+  filter(course == "Music and Dance") %>%  # Filtre le cours
+  filter(!is.na(grade)) %>%  # Seulement les notes non manquantes
+  group_by(id) %>% 
+  summarise(nb_grades_music_dance = n()) %>% 
+  left_join(student %>% select(id, group), by = "id")
+
+# Afficher un extrait
+music_dance_grades %>% 
+  slice_sample(n = 10) %>% 
+  kable()
+```
 
