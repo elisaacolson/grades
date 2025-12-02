@@ -111,7 +111,16 @@ ggplot(student, aes(x = age)) +
 ```
 ### Question 8
 ```{r}
+# Calculer l'âge médian par groupe
+median_age_by_group <- student %>% 
+  mutate(age = round(time_length(today() - birth_date, unit = "year"))) %>% 
+  group_by(group) %>% 
+  summarise(median_age = as.integer(median(age))) %>% 
+  rename(Group = group, `Median Age` = median_age)
 
+# Afficher le tableau
+median_age_by_group %>% 
+  kable()
 ```
 
 
