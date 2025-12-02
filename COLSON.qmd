@@ -391,4 +391,61 @@ correlation_by_group <- grades_wide %>%
 correlation_by_group %>% 
   kable()
 ```
+### Question 22 
+
+```{r}
+# 1. Calculer la corrélation par groupe
+correlation_by_group <- grades_wide %>%
+  select(group, `History and Civilization of India`, `Vedic Philosophy and Spirituality`) %>%
+  group_by(group) %>%
+  summarise(
+    correlation = cor(
+      `History and Civilization of India`,
+      `Vedic Philosophy and Spirituality`,
+      use = "complete.obs"
+    ),
+    .groups = "drop"
+  )
+
+# 2. Identifier le groupe avec corrélation maximale en valeur absolue
+target_group <- correlation_by_group %>%
+  slice_max(abs(correlation), n = 1) %>%
+  pull(group)
+
+# 3. Sélectionner les étudiants de ce groupe
+students_target_group <- grades_wide %>%
+  filter(group == target_group)
+
+# 4. Graphique scatter plot
+ggplot(students_target_group, aes(
+  x = `Vedic Philosophy and Spirituality`,
+  y = `History and Civilization of India`
+)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +  # points lisibles
+  geom_smooth(method = "lm", color = "darkred", linetype = "dashed", se = FALSE) + # ligne de tendance
+  labs(
+    title = paste0("Group ", target_group, ": History vs Vedic Philosophy"),
+    x = "Average Grade in Vedic Philosophy and Spirituality",
+    y = "Average Grade in History and Civilization of India"
+  ) 
+```
+
+### Question 23
+
+```{r}
+# 1. Calculer la note finale
+final_grades <- grades_wide %>%
+  rowwise() %>%  # permet de faire des calculs par ligne
+  mutate(final_grade = mean(c_across(-c(id, group)), na.rm = TRUE)) %>%  # moyenne des colonnes de cours
+  ungroup() %>%
+  left_join(student %>% select(id, sex), by = "id") %>%  # ajouter le sexe
+  select(id, group, sex, final_grade) %>%  # garder uniquement les colonnes demandées
+  arrange(desc(final_grade))  # trier par note finale décroissante
+
+# 2. Afficher les 5 meilleurs étudiants pour Quarto
+final_grades %>%
+  slice_head(n = 5) %>%
+  kable()
+```
+
 
