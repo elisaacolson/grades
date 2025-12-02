@@ -448,4 +448,19 @@ final_grades %>%
   kable()
 ```
 
+### Question 24
+
+```{r}
+final_grades %>%
+  group_by(group) %>%
+  summarise(
+    mean_grade = mean(final_grade),
+    median_grade = median(final_grade),
+    sd_grade = sd(final_grade),
+    n_students = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(mean_grade)) %>%
+  kable()
+```
 
