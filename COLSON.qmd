@@ -12,6 +12,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(knitr)
+library(lubridate)
 ```
 
 ### Question 1
@@ -89,4 +90,28 @@ ggplot(student, aes(x = group, fill = sex)) +
     fill = "Gender"
   )
 ```
+
+### Question 7 
+```{r}
+
+student <- student %>% 
+  mutate(
+    age = round(time_length(today() - birth_date, unit = "year"))
+  )
+
+# Histogramme de l'âge
+ggplot(student, aes(x = age)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Student Ages",
+    x = "Age (years)",
+    y = "Number of Students"
+  ) +
+  theme_minimal()
+```
+### Question 8
+```{r}
+
+```
+
 
