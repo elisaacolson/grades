@@ -333,25 +333,25 @@ ggplot(music_dance_grades, aes(x = factor(group),
 ### question 19
 
 ```{r}
-# Calculer la moyenne des notes par étudiant et par cours
+# mean by student and by group
 grades_wide <- grades %>%
-  filter(!is.na(grade)) %>%                    # Ignorer les notes manquantes
-  group_by(id, course_id) %>%                  # Grouper par étudiant et par cours
-  summarise(avg_grade = mean(grade), .groups = "drop") %>%  # Calculer la moyenne et supprimer le regroupement
-  left_join(cours %>% select(course_id, course), by = "course_id") %>%  # Ajouter le nom du cours
-  left_join(student %>% select(id, group), by = "id") %>%  # Ajouter le groupe de l’étudiant
-  mutate(avg_grade = round(avg_grade, 2)) %>%   # Arrondir la moyenne à 2 décimales
+  filter(!is.na(grade)) %>%                     
+  group_by(id, course_id) %>%                  
+  summarise(avg_grade = mean(grade), .groups = "drop") %>%  
+  left_join(cours %>% select(course_id, course), by = "course_id") %>%  
+  left_join(student %>% select(id, group), by = "id") %>%  
+  mutate(avg_grade = round(avg_grade, 2)) %>%  
   select(id, group, course, avg_grade) %>%
-  pivot_wider(                                 # Transformer en format large : 1 colonne par cours
+  pivot_wider(                                 
     names_from = course,
     values_from = avg_grade
   )
 
-# Afficher un petit extrait pour Quarto
+
 grades_wide %>%
   select(id, group, `Architecture and Sculpture`, `Astrology and Astrology`) %>%  # Sélectionner id, group et 2 cours pour l’extrait
-  slice_sample(n = 5) %>%  # Afficher 5 lignes aléatoires
-  kable()                  # Formater le tableau joliment pour Quarto
+  slice_sample(n = 5) %>%  
+  kable()               
 ```
 ### Question 20
 
@@ -377,17 +377,17 @@ The graph shows us that there is a slightly correlation between these two grade(
 ```{r}
 correlation_by_group <- grades_wide %>%
   select(group, `History and Civilization of India`, `Vedic Philosophy and Spirituality`) %>%
-  group_by(group) %>%                                # Grouper par groupe
+  group_by(group) %>%                              
   summarise(
     correlation = cor(
       `History and Civilization of India`,
       `Vedic Philosophy and Spirituality`,
-      use = "complete.obs"  # ignore les NA
+      use = "complete.obs"  
     ),
     .groups = "drop"
   )
 
-# Afficher le résultat
+
 correlation_by_group %>% 
   kable()
 ```
@@ -395,7 +395,7 @@ We observ that for every groups (except 11) the correlation is negative between 
 ### Question 22 
 
 ```{r}
-# 1. Calculer la corrélation par groupe
+# correlation by group
 correlation_by_group <- grades_wide %>%
   select(group, `History and Civilization of India`, `Vedic Philosophy and Spirituality`) %>%
   group_by(group) %>%
@@ -408,22 +408,22 @@ correlation_by_group <- grades_wide %>%
     .groups = "drop"
   )
 
-# 2. Identifier le groupe avec corrélation maximale en valeur absolue
+# select the group with the higher correlation
 target_group <- correlation_by_group %>%
   slice_max(abs(correlation), n = 1) %>%
   pull(group)
 
-# 3. Sélectionner les étudiants de ce groupe
+# student of this group
 students_target_group <- grades_wide %>%
   filter(group == target_group)
 
-# 4. Graphique scatter plot
+#scatter plot
 ggplot(students_target_group, aes(
   x = `Vedic Philosophy and Spirituality`,
   y = `History and Civilization of India`
 )) +
-  geom_point(color = "steelblue", size = 3, alpha = 0.7) +  # points lisibles
-  geom_smooth(method = "lm", color = "darkred", linetype = "dashed", se = FALSE) + # ligne de tendance
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) + 
+  geom_smooth(method = "lm", color = "darkred", linetype = "dashed", se = FALSE) + 
   labs(
     title = paste0("Group ", target_group, ": History vs Vedic Philosophy"),
     x = "Average Grade in Vedic Philosophy and Spirituality",
@@ -434,16 +434,16 @@ There is a clear correlation between these two variables, as we selected the ext
 ### Question 23
 
 ```{r}
-# 1. Calculer la note finale
+# compute the final grade
 final_grades <- grades_wide %>%
-  rowwise() %>%  # permet de faire des calculs par ligne
-  mutate(final_grade = mean(c_across(-c(id, group)), na.rm = TRUE)) %>%  # moyenne des colonnes de cours
+  rowwise() %>%  
+  mutate(final_grade = mean(c_across(-c(id, group)), na.rm = TRUE)) %>%  
   ungroup() %>%
-  left_join(student %>% select(id, sex), by = "id") %>%  # ajouter le sexe
-  select(id, group, sex, final_grade) %>%  # garder uniquement les colonnes demandées
-  arrange(desc(final_grade))  # trier par note finale décroissante
+  left_join(student %>% select(id, sex), by = "id") %>%  # add the variable sex
+  select(id, group, sex, final_grade) %>%  # keep only the columns we want
+  arrange(desc(final_grade))  
 
-# 2. Afficher les 5 meilleurs étudiants pour Quarto
+
 final_grades %>%
   slice_head(n = 5) %>%
   kable()
@@ -455,7 +455,7 @@ The group 9 has the 4 first of the prom. We can assume that this group is better
 ```{r}
 ggplot(final_grades, aes(x = factor(group), y = final_grade)) +
   geom_boxplot(fill = "lightblue") +
-  geom_jitter(width = 0.2, alpha = 0.6, color = "steelblue") + # points pour voir chaque étudiant
+  geom_jitter(width = 0.2, alpha = 0.6, color = "steelblue") + 
   labs(
     title = "Final Grades by Group",
     x = "Group",
@@ -482,7 +482,7 @@ ggplot(final_grades, aes(x = factor(group), y = final_grade, fill = sex)) +
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),  # texte des groupes incliné
+    axis.text.x = element_text(angle = 45, hjust = 1),  
     legend.position = "top"
   )
 ```
@@ -491,8 +491,7 @@ We cannot observe a clear difference between males and females. However, if we l
 ### Question 26
 
 ```{r}
-# 1. Créer une version longue pour calculer les moyennes par trimestre
-grades_long <- grades_wide %>%
+grades_long <- grades_wide %>% #using grades_wide because it already has the mean of each student.
   pivot_longer(
     cols = -c(id, group), 
     names_to = "course", 
@@ -500,7 +499,7 @@ grades_long <- grades_wide %>%
   ) %>%
   left_join(cours %>% select(course, trimester), by = "course")
 
-# 2. Calculer pour chaque étudiant :
+# compute for each student:
 pass_df <- grades_long %>%
   group_by(id, group) %>%
   summarise(
@@ -517,8 +516,17 @@ pass_df <- grades_long %>%
   select(id, group, final_grade, pass) %>%
   arrange(desc(final_grade))
 
-# 3. Afficher les 5 premières lignes pour Quarto
-library(knitr)
 pass_df %>% slice_head(n = 5) %>% kable()
+```
+### Question 27
+
+```{r}
+fail_high_grade <- pass_df %>%
+  filter(pass == FALSE & final_grade >= 10)
+
+n_students <- nrow(fail_high_grade)
+n_students
+
+fail_high_grade %>% kable()
 ```
 
