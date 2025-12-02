@@ -122,5 +122,21 @@ median_age_by_group <- student %>%
 median_age_by_group %>% 
   kable()
 ```
+### Question 9
 
+```{r}
+# Trouver l'étudiant le plus âgé par groupe
+oldest_by_group <- student %>% 
+  mutate(age = round(time_length(today() - birth_date, unit = "year"))) %>% 
+  group_by(group) %>% 
+  slice_max(age, n = 1) %>%  # Garde le plus âgé de chaque groupe
+  ungroup() %>% 
+  select(id, sex, age, group) %>% 
+  arrange(desc(age)) %>%  # Trie par âge décroissant
+  rename(ID = id, Sex = sex, Age = age, Group = group)
+
+# Afficher le tableau
+oldest_by_group %>% 
+  kable()
+```
 
