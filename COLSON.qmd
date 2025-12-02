@@ -67,7 +67,11 @@ ok_columns <- read_delim(here("DATA/grades.csv"),
   na = "*")
 
 ```
+
+## Student population analysis
+
 ### Question 5
+
 ```{r}
 student %>% 
   count(group) %>% 
@@ -79,7 +83,9 @@ student %>%
     y = "Number of Students"
   )
 ```
+
 ### Question 6
+
 ```{r}
 ggplot(student, aes(x = group, fill = sex)) +
   geom_bar() +
@@ -91,7 +97,8 @@ ggplot(student, aes(x = group, fill = sex)) +
   )
 ```
 
-### Question 7 
+### Question 7
+
 ```{r}
 
 student <- student %>% 
@@ -109,7 +116,9 @@ ggplot(student, aes(x = age)) +
   ) +
   theme_minimal()
 ```
+
 ### Question 8
+
 ```{r}
 # Calculer l'âge médian par groupe
 median_age_by_group <- student %>% 
@@ -122,6 +131,7 @@ median_age_by_group <- student %>%
 median_age_by_group %>% 
   kable()
 ```
+
 ### Question 9
 
 ```{r}
@@ -140,3 +150,20 @@ oldest_by_group %>%
   kable()
 ```
 
+## Simple grade analysis
+
+### Question 10
+
+```{r}
+nb_grades <- grades %>% 
+  filter(!is.na(grades)) %>% 
+  nrow()
+```
+
+The data set contains `r nb_grades` grades.
+
+### Question 11
+
+```{r}
+
+```
