@@ -333,20 +333,42 @@ ggplot(music_dance_grades, aes(x = factor(group),
 ### question 19
 
 ```{r}
-# Créer le data frame avec une moyenne par étudiant et par cours
+# Calculer la moyenne des notes par étudiant et par cours
 grades_wide <- grades %>%
-  filter(!is.na(grade)) %>%                    # ignorer les notes manquantes
-  group_by(id, course_id) %>%                  # grouper par étudiant et cours
-  summarise(avg_grade = mean(grade), .groups = "drop") %>%  # calculer la moyenne
-  left_join(cours %>% select(course_id, course), by = "course_id") %>%  # ajouter le nom du cours
-  left_join(student %>% select(id, group), by = "id") %>%  # ajouter le groupe
+  filter(!is.na(grade)) %>%                    # Ignorer les notes manquantes
+  group_by(id, course_id) %>%                  # Grouper par étudiant et par cours
+  summarise(avg_grade = mean(grade), .groups = "drop") %>%  # Calculer la moyenne et supprimer le regroupement
+  left_join(cours %>% select(course_id, course), by = "course_id") %>%  # Ajouter le nom du cours
+  left_join(student %>% select(id, group), by = "id") %>%  # Ajouter le groupe de l’étudiant
+  mutate(avg_grade = round(avg_grade, 2)) %>%   # Arrondir la moyenne à 2 décimales
   select(id, group, course, avg_grade) %>%
-  pivot_wider(names_from = course, values_from = avg_grade)  # passer en format large
+  pivot_wider(                                 # Transformer en format large : 1 colonne par cours
+    names_from = course,
+    values_from = avg_grade
+  )
 
-# Afficher un petit extrait pour Quarto (id, group et 2 cours)
+# Afficher un petit extrait pour Quarto
 grades_wide %>%
-  select(id, group, `Architecture and Sculpture`, `Astrology and Astrology`) %>%
-  slice_sample(n = 5) %>%  # afficher 5 lignes aléatoires
-  kable()
+  select(id, group, `Architecture and Sculpture`, `Astrology and Astrology`) %>%  # Sélectionner id, group et 2 cours pour l’extrait
+  slice_sample(n = 5) %>%  # Afficher 5 lignes aléatoires
+  kable()                  # Formater le tableau joliment pour Quarto
+```
+### Question 20
+
+```{r}
+grades_wide %>%
+  ggplot(aes(
+    x = `Martial Arts and Self-Defense`,
+    y = `Music and Dance`
+  )) +
+  geom_jitter(width = 0.2, height = 0.2, color = "steelblue", alpha = 0.7, size = 3) +
+  geom_smooth(method = "lm", color = "darkred", linetype = "dashed") +
+  labs(
+    title = "Average Grades: Music and Dance vs Martial Arts and Self-Defense",
+    x = "Average Grade in Martial Arts and Self-Defense",
+    y = "Average Grade in Music and Dance"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
