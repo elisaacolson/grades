@@ -62,9 +62,16 @@ The `birth_date` column of the students data frame is of class `r class(student$
 
 ```{r}
 grades <- read_csv(here("DATA/grades.csv"))
-ok_columns <- read_delim(here("DATA/grades.csv"),
-  delim = ";",
-  na = "*")
+grades <- read_delim(
+  here("DATA/grades.csv"),
+  delim = ";",        # Séparateur ;
+  na = "*",           # NA représenté par *
+  col_types = cols(
+    id = col_integer(),
+    course_id = col_integer(),
+    grade = col_double()
+  )
+)
 
 ```
 
@@ -116,6 +123,10 @@ ggplot(student, aes(x = age)) +
   ) +
   theme_minimal()
 ```
+```{r}
+colnames(student)
+
+```
 
 ### Question 8
 
@@ -165,5 +176,25 @@ The data set contains `r nb_grades` grades.
 ### Question 11
 
 ```{r}
+grades %>% 
+  left_join(student, by = "id") %>% 
+  left_join(cours, by = "course_id") %>% 
+  filter(course == "Ayurveda and Traditional Medicine") %>% 
+  group_by(group) %>% 
+  summarise(avg_grade = mean(grade, na.rm = TRUE)) %>% 
+  ggplot(aes(x = group, y = avg_grade)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Average Grade in Ayurveda and Traditional Medicine by Group",
+    x = "Group",
+    y = "Average Grade"
+  ) +
+  theme_minimal()
+```
+### Question 12
+
+```{r}
 
 ```
+
+
