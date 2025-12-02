@@ -234,4 +234,20 @@ nb_grades_per_student %>%
   ) %>% 
   kable()
 ```
- 
+
+### Question 14
+
+
+```{r}
+nb_grades_per_student %>% 
+  ggplot(aes(x = sex, y = nb_grades, fill = sex)) +
+  geom_violin(alpha = 0.7) +
+  geom_boxplot(width = 0.2, alpha = 0.5) +
+  scale_fill_manual(values = c("F" = "#E91E63", "M" = "#2196F3")) +
+  labs(
+    title = "Distribution of Number of Grades by Gender",
+    x = "Gender",
+    y = "Number of Grades"
+  )
+```
+
