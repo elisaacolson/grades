@@ -55,5 +55,11 @@ col_types = cols(
 
 ```
 
-The `birth_date` column of the students data frame is of class `r class(student$birth_date)`
-.
+The `birth_date` column of the students data frame is of class `r class(student$birth_date)`.
+
+### Question 4
+
+```{r}
+
+```
+
