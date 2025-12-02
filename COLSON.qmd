@@ -291,3 +291,43 @@ distribution_music_dance %>%
   theme_minimal()
 ```
 
+### Question 17
+
+```{r}
+music_dance_grades %>% 
+  ggplot(aes(x = factor(group), y = nb_grades_music_dance)) +
+  geom_boxplot(fill = "lightblue") +
+  labs(
+    title = "Number of Grades in Music and Dance by Group",
+    x = "Group",
+    y = "Number of Grades"
+  ) +
+  theme_minimal()
+```
+
+### Question 18 
+
+```{r}
+music_dance_grades <- grades %>% 
+  left_join(cours, by = "course_id") %>% 
+  filter(course == "Music and Dance") %>%  
+  filter(!is.na(grade)) %>%  
+  group_by(id) %>% 
+  summarise(nb_grades_music_dance = n()) %>% 
+  left_join(student %>% select(id, group, sex), by = "id")
+
+ggplot(music_dance_grades, aes(x = factor(group), 
+                               y = nb_grades_music_dance)) +
+  geom_boxplot(fill = "lightblue") +
+  facet_wrap(~ sex) +
+  labs(
+    title = "Number of Grades in Music & Dance by Group, Separated by Sex",
+    x = "Group",
+    y = "Number of Grades"
+  ) +
+  theme_minimal()
+```
+
+## Grade Analysis
+
+### question 19
