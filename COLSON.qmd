@@ -331,3 +331,22 @@ ggplot(music_dance_grades, aes(x = factor(group),
 ## Grade Analysis
 
 ### question 19
+
+```{r}
+# Créer le data frame avec une moyenne par étudiant et par cours
+grades_wide <- grades %>%
+  filter(!is.na(grade)) %>%                    # ignorer les notes manquantes
+  group_by(id, course_id) %>%                  # grouper par étudiant et cours
+  summarise(avg_grade = mean(grade), .groups = "drop") %>%  # calculer la moyenne
+  left_join(cours %>% select(course_id, course), by = "course_id") %>%  # ajouter le nom du cours
+  left_join(student %>% select(id, group), by = "id") %>%  # ajouter le groupe
+  select(id, group, course, avg_grade) %>%
+  pivot_wider(names_from = course, values_from = avg_grade)  # passer en format large
+
+# Afficher un petit extrait pour Quarto (id, group et 2 cours)
+grades_wide %>%
+  select(id, group, `Architecture and Sculpture`, `Astrology and Astrology`) %>%
+  slice_sample(n = 5) %>%  # afficher 5 lignes aléatoires
+  kable()
+```
+
