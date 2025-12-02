@@ -1,5 +1,33 @@
 ---
 title: "COLSON"
+author: "Elisa Colson"
 format: html
 ---
+
+```{r}
+here::i_am("grades.Rproj")
+library(here)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+### Question 1
+```{r}
+cours <- read_csv(here("courses.csv"))
+```
+
+### Question 2
+```{r}
+cours %>% 
+  arrange(course) %>% 
+  rename(
+    Course = course,
+    `Course ID` = course_id,
+    Trimester = trimester,
+    `Number of Exams` = nb_grades
+  ) %>% 
+  kable() 
+```
 
