@@ -78,8 +78,15 @@ student %>%
     y = "Number of Students"
   )
 ```
-
+### Question 6
 ```{r}
-
+ggplot(student, aes(x = group, fill = sex)) +
+  geom_bar() +
+  labs(
+    title = "Gender Balance per Group",
+    x = "Group",
+    y = "Number of Students",
+    fill = "Gender"
+  )
 ```
 
