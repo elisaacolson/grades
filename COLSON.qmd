@@ -13,12 +13,15 @@ library(tidyr)
 library(ggplot2)
 library(knitr)
 ```
+
 ### Question 1
+
 ```{r}
 cours <- read_csv(here("courses.csv"))
 ```
 
 ### Question 2
+
 ```{r}
 cours %>% 
   arrange(course) %>% 
@@ -31,3 +34,26 @@ cours %>%
   kable() 
 ```
 
+### Question 3
+
+```{r}
+student <- read_csv(here("students.csv"))
+
+```
+
+```{r}
+spec(student)
+```
+
+```{r}
+col_types = cols(
+    id = col_integer(),
+    group = col_factor(),
+    birth_date = col_date(format = "%Y-%m-%d"),
+    sex = col_factor()
+  )
+
+```
+
+The `birth_date` column of the students data frame is of class `r class(student$birth_date)`
+.
