@@ -267,4 +267,27 @@ music_dance_grades %>%
   slice_sample(n = 10) %>% 
   kable()
 ```
+### Question 16
+
+```{r}
+# Distribution du nombre de notes
+distribution_music_dance <- music_dance_grades %>% 
+  count(nb_grades_music_dance, name = "nb_students")
+
+# Afficher le tableau
+distribution_music_dance %>% 
+  kable()
+
+# Graphique
+distribution_music_dance %>% 
+  ggplot(aes(x = nb_grades_music_dance, y = nb_students)) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = nb_students), vjust = -0.5) +
+  labs(
+    title = "Distribution of Number of Grades in Music and Dance",
+    x = "Number of Grades",
+    y = "Number of Students"
+  ) +
+  theme_minimal()
+```
 
