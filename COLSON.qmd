@@ -371,7 +371,7 @@ grades_wide %>%
   theme_minimal(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
-
+The graph shows us that there is a slightly correlation between these two grade(red line).
 ### Question 21
 
 ```{r}
@@ -391,6 +391,7 @@ correlation_by_group <- grades_wide %>%
 correlation_by_group %>% 
   kable()
 ```
+We observ that for every groups (except 11) the correlation is negative between these two classes. Some groups more than others with -0.55 of correlation for the group 12 compared to the group 19 which has -0.05 of correlation.  Maybe because they both ask for a lot of works
 ### Question 22 
 
 ```{r}
@@ -429,7 +430,7 @@ ggplot(students_target_group, aes(
     y = "Average Grade in History and Civilization of India"
   ) 
 ```
-
+There is a clear correlation between these two variables, as we selected the extreme values. This confirms that they are strongly negatively correlated.
 ### Question 23
 
 ```{r}
@@ -447,20 +448,42 @@ final_grades %>%
   slice_head(n = 5) %>%
   kable()
 ```
-
+The group 9 has the 4 first of the prom. We can assume that this group is better than the others.
 ### Question 24
 
-```{r}
-final_grades %>%
-  group_by(group) %>%
-  summarise(
-    mean_grade = mean(final_grade),
-    median_grade = median(final_grade),
-    sd_grade = sd(final_grade),
-    n_students = n(),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(mean_grade)) %>%
-  kable()
-```
 
+```{r}
+ggplot(final_grades, aes(x = factor(group), y = final_grade)) +
+  geom_boxplot(fill = "lightblue") +
+  geom_jitter(width = 0.2, alpha = 0.6, color = "steelblue") + # points pour voir chaque étudiant
+  labs(
+    title = "Final Grades by Group",
+    x = "Group",
+    y = "Final Grade"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+Initially, I chose to analyze the data using a table showing the mean, median, and standard deviation. However, I believe that this graph illustrates the differences between the groups much more clearly. Indeed, as in the previous question, we can see that Group 9, for instance, stands out significantly compared to the others.
+
+### Question 25 
+
+```{r}
+ggplot(final_grades, aes(x = factor(group), y = final_grade, fill = sex)) +
+  geom_boxplot(width = 0.6, position = position_dodge(0.9)) + 
+  geom_jitter(aes(color = sex), size = 2, alpha = 0.5, 
+              position = position_jitterdodge(jitter.width = 0.25, dodge.width = 0.9)) +
+  labs(
+    title = "Final Grades by Group and Sex",
+    x = "Group",
+    y = "Final Grade",
+    fill = "Sex",
+    color = "Sex"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # texte des groupes incliné
+    legend.position = "top"
+  )
+```
+We cannot observe a clear difference between males and females. However, if we look more closely, for instance in Group 19, the girls have, on average, higher grades, although the top students in the class are male.
