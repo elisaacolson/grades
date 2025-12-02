@@ -487,3 +487,38 @@ ggplot(final_grades, aes(x = factor(group), y = final_grade, fill = sex)) +
   )
 ```
 We cannot observe a clear difference between males and females. However, if we look more closely, for instance in Group 19, the girls have, on average, higher grades, although the top students in the class are male.
+
+### Question 26
+
+```{r}
+# 1. Créer une version longue pour calculer les moyennes par trimestre
+grades_long <- grades_wide %>%
+  pivot_longer(
+    cols = -c(id, group), 
+    names_to = "course", 
+    values_to = "avg_grade"
+  ) %>%
+  left_join(cours %>% select(course, trimester), by = "course")
+
+# 2. Calculer pour chaque étudiant :
+pass_df <- grades_long %>%
+  group_by(id, group) %>%
+  summarise(
+    final_grade = mean(avg_grade, na.rm = TRUE),
+    min_course = min(avg_grade, na.rm = TRUE),
+    trimester1 = mean(avg_grade[trimester == 1], na.rm = TRUE),
+    trimester2 = mean(avg_grade[trimester == 2], na.rm = TRUE),
+    trimester3 = mean(avg_grade[trimester == 3], na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    pass = (min_course >= 5) & (trimester1 >= 10) & (trimester2 >= 10) & (trimester3 >= 10)
+  ) %>%
+  select(id, group, final_grade, pass) %>%
+  arrange(desc(final_grade))
+
+# 3. Afficher les 5 premières lignes pour Quarto
+library(knitr)
+pass_df %>% slice_head(n = 5) %>% kable()
+```
+
