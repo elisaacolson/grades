@@ -372,3 +372,21 @@ grades_wide %>%
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
+### Question 21
+
+```{r}
+correlation_by_group <- grades_wide %>%
+  select(group, `History and Civilization of India`, `Vedic Philosophy and Spirituality`) %>%
+  group_by(group) %>%                                # Grouper par groupe
+  summarise(
+    correlation = cor(
+      `History and Civilization of India`,
+      `Vedic Philosophy and Spirituality`,
+      use = "complete.obs"  # ignore les NA
+    ),
+    .groups = "drop"
+  )
+
+
+```
+
