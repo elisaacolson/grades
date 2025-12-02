@@ -527,6 +527,6 @@ fail_high_grade <- pass_df %>%
 n_students <- nrow(fail_high_grade)
 n_students
 
-fail_high_grade %>% kable()
+fail_high_grade %>% slice_sample(n=5) %>%kable()
 ```
 
