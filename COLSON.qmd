@@ -194,7 +194,17 @@ grades %>%
 ### Question 12
 
 ```{r}
-
+grades %>% 
+  left_join(cours, by = "course_id") %>% 
+  filter(!is.na(grade)) %>%  # Enlève les notes manquantes
+  ggplot(aes(x = as.factor(trimester), y = grade, fill = as.factor(trimester))) +
+  geom_boxplot() +
+  labs(
+    title = "Distribution of Grades by Trimester",
+    x = "Trimester",
+    y = "Grade",
+    fill = "Trimester"
+  ) 
 ```
 
 
