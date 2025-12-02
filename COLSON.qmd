@@ -4,6 +4,8 @@ author: "Elisa Colson"
 format: html
 ---
 
+link to my GitHub : https://github.com/elisaacolson/grades
+
 ```{r}
 here::i_am("grades.Rproj")
 library(here)
@@ -113,7 +115,7 @@ student <- student %>%
     age = round(time_length(today() - birth_date, unit = "year"))
   )
 
-# Histogramme de l'âge
+# histogram of age
 ggplot(student, aes(x = age)) +
   geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
   labs(
@@ -132,14 +134,13 @@ colnames(student)
 ### Question 8
 
 ```{r}
-# Calculer l'âge médian par groupe
+# compute median age by group
 median_age_by_group <- student %>% 
   mutate(age = round(time_length(today() - birth_date, unit = "year"))) %>% 
   group_by(group) %>% 
   summarise(median_age = as.integer(median(age))) %>% 
   rename(Group = group, `Median Age` = median_age)
 
-# Afficher le tableau
 median_age_by_group %>% 
   kable()
 ```
@@ -147,17 +148,17 @@ median_age_by_group %>%
 ### Question 9
 
 ```{r}
-# Trouver l'étudiant le plus âgé par groupe
+# find the student the oldest by group
 oldest_by_group <- student %>% 
   mutate(age = round(time_length(today() - birth_date, unit = "year"))) %>% 
   group_by(group) %>% 
-  slice_max(age, n = 1) %>%  # Garde le plus âgé de chaque groupe
+  slice_max(age, n = 1) %>%  
   ungroup() %>% 
   select(id, sex, age, group) %>% 
-  arrange(desc(age)) %>%  # Trie par âge décroissant
+  arrange(desc(age)) %>%  
   rename(ID = id, Sex = sex, Age = age, Group = group)
 
-# Afficher le tableau
+
 oldest_by_group %>% 
   kable()
 ```
@@ -214,7 +215,7 @@ grades %>%
 ### Question 13
 
 ```{r}
-# Nombre de notes par étudiant
+# number of grades by student
 nb_grades_per_student <-grades %>% 
   filter(!is.na(grade)) %>% 
   group_by(id) %>% 
@@ -223,12 +224,12 @@ nb_grades_per_student <-grades %>%
 ```
 
 ```{r}
-# Afficher un extrait
+
 nb_grades_per_student %>% 
   slice_sample(n = 10) %>% 
   kable()
 
-# Statistiques
+# statistics
 nb_grades_per_student %>% 
   summarise(
     Minimum = min(nb_grades),
@@ -257,16 +258,16 @@ nb_grades_per_student %>%
 ### Question 15
 
 ```{r}
-# Créer le dataframe
+# Create the dataframe
 music_dance_grades <- grades %>% 
   left_join(cours, by = "course_id") %>% 
-  filter(course == "Music and Dance") %>%  # Filtre le cours
-  filter(!is.na(grade)) %>%  # Seulement les notes non manquantes
+  filter(course == "Music and Dance") %>%  
+  filter(!is.na(grade)) %>%  
   group_by(id) %>% 
   summarise(nb_grades_music_dance = n()) %>% 
   left_join(student %>% select(id, group), by = "id")
 
-# Afficher un extrait
+
 music_dance_grades %>% 
   slice_sample(n = 10) %>% 
   kable()
@@ -275,15 +276,15 @@ music_dance_grades %>%
 ### Question 16
 
 ```{r}
-# Distribution du nombre de notes
+# distribution of the number of grades
 distribution_music_dance <- music_dance_grades %>% 
   count(nb_grades_music_dance, name = "nb_students")
 
-# Afficher le tableau
+
 distribution_music_dance %>% 
   kable()
 
-# Graphique
+
 distribution_music_dance %>% 
   ggplot(aes(x = nb_grades_music_dance, y = nb_students)) +
   geom_col(fill = "steelblue") +
@@ -335,7 +336,7 @@ ggplot(music_dance_grades, aes(x = factor(group),
 
 ## Grade Analysis
 
-### question 19
+### Question 19
 
 ```{r}
 # mean by student and by group
@@ -585,3 +586,29 @@ course_fail_count <- grades_avg %>%
 the course that contributes the most to student failure is `r course_fail_count$course[1]`, with `r course_fail_count$n_failures[1]` students failing because of it.
 
 ### Question 30
+
+```{r}
+# combine age with pass_df
+pass_age <- pass_df %>%
+  left_join(student %>% select(id, age), by = "id")
+
+# calculate pass rate per age
+pass_rate_age <- pass_age %>%
+  group_by(age) %>%
+  summarise(pass_rate = mean(pass) * 100, n_students = n(), .groups = "drop")
+
+# display table (optional)
+pass_rate_age %>% kable()
+
+# plot pass rate as a function of age
+ggplot(pass_rate_age, aes(x = age, y = pass_rate)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "darkred", size = 2) +
+  labs(
+    title = "pass rate as a function of student age",
+    x = "age",
+    y = "pass rate (%)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
