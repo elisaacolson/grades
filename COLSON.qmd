@@ -17,7 +17,7 @@ library(knitr)
 ### Question 1
 
 ```{r}
-cours <- read_csv(here("courses.csv"))
+cours <- read_csv(here("DATA/courses.csv"))
 ```
 
 ### Question 2
@@ -37,7 +37,7 @@ cours %>%
 ### Question 3
 
 ```{r}
-student <- read_csv(here("students.csv"))
+student <- read_csv(here("DATA/students.csv"))
 
 ```
 
@@ -58,6 +58,26 @@ col_types = cols(
 The `birth_date` column of the students data frame is of class `r class(student$birth_date)`.
 
 ### Question 4
+
+```{r}
+grades <- read_csv(here("DATA/grades.csv"))
+ok_columns <- read_delim(here("DATA/grades.csv"),
+  delim = ";",
+  na = "*")
+
+```
+### Question 5
+```{r}
+student %>% 
+  count(group) %>% 
+  ggplot(aes(x = group, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Number of Students per Group",
+    x = "Group",
+    y = "Number of Students"
+  )
+```
 
 ```{r}
 
