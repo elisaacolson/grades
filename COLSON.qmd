@@ -167,7 +167,7 @@ oldest_by_group %>%
 
 ```{r}
 nb_grades <- grades %>% 
-  filter(!is.na(grades)) %>% 
+  filter(!is.na(grade)) %>% 
   nrow()
 ```
 
@@ -206,5 +206,32 @@ grades %>%
     fill = "Trimester"
   ) 
 ```
+## Attendance Analysis
+### Question 13
 
+```{r}
+# Nombre de notes par étudiant
+nb_grades_per_student <-grades %>% 
+  filter(!is.na(grade)) %>% 
+  group_by(id) %>% 
+  summarise(nb_grades = n()) %>% 
+  left_join(student %>% select(id, group, sex), by = "id")
+```
+ 
+```{r}
+# Afficher un extrait
+nb_grades_per_student %>% 
+  slice_sample(n = 10) %>% 
+  kable()
 
+# Statistiques
+nb_grades_per_student %>% 
+  summarise(
+    Minimum = min(nb_grades),
+    Maximum = max(nb_grades),
+    Average = round(mean(nb_grades), 1),
+    Median = median(nb_grades)
+  ) %>% 
+  kable()
+```
+ 
