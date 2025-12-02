@@ -387,6 +387,8 @@ correlation_by_group <- grades_wide %>%
     .groups = "drop"
   )
 
-
+# Afficher le résultat
+correlation_by_group %>% 
+  kable()
 ```
 
